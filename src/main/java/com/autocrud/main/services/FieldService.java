@@ -1,44 +1,45 @@
 package com.autocrud.main.services;
 
-import com.autocrud.main.models.Field;
-import com.autocrud.main.models.Channel;
-import com.autocrud.main.models.FieldDTO;
+import com.autocrud.main.dtos.FieldDTO;
+import com.autocrud.main.entities.Channel;
+import com.autocrud.main.entities.Field;
+import com.autocrud.main.exceptions.FieldNotFoundException;
 import com.autocrud.main.repositories.FieldRepository;
+import com.autocrud.main.transformers.FieldTransformer;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class FieldService {
 
     private final FieldRepository fieldRepository;
+    private final FieldTransformer fieldTransformer;
 
-    public FieldService(FieldRepository fieldRepository) {
+    public FieldService(FieldRepository fieldRepository, FieldTransformer fieldTransformer) {
         this.fieldRepository = fieldRepository;
+        this.fieldTransformer = fieldTransformer;
     }
 
     public List<Field> createFieldsFromDTO(List<FieldDTO> fieldDTOs, Channel channel) {
-        List<Field> fields = new ArrayList<>();
-        for (FieldDTO fieldDTO : fieldDTOs) {
-            Field field = new Field();
-            field.setFieldName(fieldDTO.getFieldName());
-            field.setDataType(fieldDTO.getDataType());
-            field.setChannel(channel);
-            fields.add(field);
-        }
-        return fieldRepository.saveAll(fields);
+        return fieldRepository.saveAll(fieldTransformer.convertToEntities(fieldDTOs, channel));
     }
 
-    public List<FieldDTO> convertFieldsToDTOs(List<Field> fields) {
-        List<FieldDTO> fieldDTOs = new ArrayList<>();
-        fields.forEach(field -> {
-            FieldDTO fieldDTO = new FieldDTO();
-            fieldDTO.setId(field.getId());
-            fieldDTO.setFieldName(field.getFieldName());
-            fieldDTO.setDataType(field.getDataType());
-            fieldDTOs.add(fieldDTO);
-        });
-        return fieldDTOs;
+    public FieldDTO getFieldById(Long fieldId) {
+        Field field = fieldRepository.findById(fieldId)
+            .orElseThrow(() -> new FieldNotFoundException(fieldId));
+
+        return fieldTransformer.convertToDTO(field);
+    }
+
+    public FieldDTO updateFieldById(Long fieldId, FieldDTO fieldDTO) {
+        Field field = fieldRepository.findById(fieldId)
+            .orElseThrow(() -> new FieldNotFoundException(fieldId));
+
+        field.setFieldName(fieldDTO.getFieldName());
+        field.setDataType(fieldDTO.getDataType());
+
+        Field updatedField = fieldRepository.save(field);
+        return fieldTransformer.convertToDTO(updatedField);
     }
 }

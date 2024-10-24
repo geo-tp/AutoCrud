@@ -1,11 +1,13 @@
 package com.autocrud.main.services;
 
-import com.autocrud.main.models.ChannelDTO;
+import com.autocrud.main.dtos.ChannelDTO;
+import com.autocrud.main.entities.Channel;
+import com.autocrud.main.entities.User;
+import com.autocrud.main.exceptions.ChannelNotFoundException;
 import com.autocrud.main.exceptions.UserNotFoundException;
-import com.autocrud.main.models.Channel;
-import com.autocrud.main.models.User;
 import com.autocrud.main.repositories.ChannelRepository;
 import com.autocrud.main.repositories.UserRepository;
+import com.autocrud.main.transformers.ChannelTransformer;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,34 +16,53 @@ public class ChannelService {
     private final ChannelRepository channelRepository;
     private final UserRepository userRepository;
     private final FieldService fieldService;
+    private final ChannelTransformer channelTransformer;
 
-    public ChannelService(ChannelRepository channelRepository, UserRepository userRepository, FieldService fieldService) {
+    public ChannelService(ChannelRepository channelRepository, UserRepository userRepository, FieldService fieldService, ChannelTransformer channelTransformer) {
         this.channelRepository = channelRepository;
         this.userRepository = userRepository;
         this.fieldService = fieldService;
+        this.channelTransformer = channelTransformer;
     }
 
-    public Channel createChannelFromDTO(ChannelDTO channelDTO) {
+    // Create a new channel
+    public ChannelDTO createChannelFromDTO(ChannelDTO channelDTO) {
         User owner = userRepository.findById(channelDTO.getOwnerId())
             .orElseThrow(() -> new UserNotFoundException(channelDTO.getOwnerId()));
 
-        Channel channel = new Channel();
-        channel.setChannelName(channelDTO.getChannelName());
-        channel.setOwner(owner);
-
+        Channel channel = channelTransformer.convertToEntity(channelDTO, owner);
         channel.setFields(fieldService.createFieldsFromDTO(channelDTO.getFields(), channel));
 
-        return channelRepository.save(channel);
+        return channelTransformer.convertToDTO(channelRepository.save(channel));
     }
 
-    public ChannelDTO convertToDTO(Channel channel) {
-        ChannelDTO dto = new ChannelDTO();
-        dto.setId(channel.getId());
-        dto.setChannelName(channel.getChannelName());
-        dto.setOwnerId(channel.getOwner().getId());
+    // Get a channel by ID
+    public ChannelDTO getChannelById(Long channelId) {
+        Channel channel = channelRepository.findById(channelId)
+                .orElseThrow(() -> new ChannelNotFoundException(channelId));
+        return channelTransformer.convertToDTO(channel);
+    }
 
-        dto.setFields(fieldService.convertFieldsToDTOs(channel.getFields()));
+    // Delete a channel by ID
+    public void deleteChannel(Long channelId) {
+        Channel channel = channelRepository.findById(channelId)
+                .orElseThrow(() -> new ChannelNotFoundException(channelId));
+        channelRepository.delete(channel);
+    }
 
-        return dto;
+    // Update an existing channel
+    public ChannelDTO updateChannel(Long channelId, ChannelDTO channelDTO) {
+        Channel channel = channelRepository.findById(channelId)
+                .orElseThrow(() -> new ChannelNotFoundException(channelId));
+
+        User owner = userRepository.findById(channelDTO.getOwnerId())
+                .orElseThrow(() -> new UserNotFoundException(channelDTO.getOwnerId()));
+
+        channel.setChannelName(channelDTO.getChannelName());
+        channel.setOwner(owner);
+        channel.setFields(fieldService.createFieldsFromDTO(channelDTO.getFields(), channel));
+
+        Channel updatedChannel = channelRepository.save(channel);
+        return channelTransformer.convertToDTO(updatedChannel);
     }
 }
