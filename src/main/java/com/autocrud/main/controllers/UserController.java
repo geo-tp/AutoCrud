@@ -1,6 +1,6 @@
 package com.autocrud.main.controllers;
 
-import com.autocrud.main.models.UserDTO;
+import com.autocrud.main.dtos.UserDTO;
 import com.autocrud.main.services.UserService;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,6 +1,6 @@
 package com.autocrud.main.controllers;
 
-import com.autocrud.main.models.EntryDTO;
+import com.autocrud.main.dtos.EntryDTO;
 import com.autocrud.main.services.EntryService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +16,27 @@ public class EntryController {
         this.entryService = entryService;
     }
 
+    // Add entries
     @PostMapping
     public List<EntryDTO> addEntries(@RequestBody List<EntryDTO> entryDTOs) {
         return entryService.addEntriesFromDTO(entryDTOs);
+    }
+
+    // Get entry by ID
+    @GetMapping("/{entryId}")
+    public EntryDTO getEntryById(@PathVariable Long entryId) {
+        return entryService.getEntryById(entryId);
+    }
+
+    // Update entry
+    @PutMapping("/{entryId}")
+    public EntryDTO updateEntry(@PathVariable Long entryId, @RequestBody EntryDTO entryDTO) {
+        return entryService.updateEntry(entryId, entryDTO);
+    }
+
+    // Delete entry by ID
+    @DeleteMapping("/{entryId}")
+    public void deleteEntry(@PathVariable Long entryId) {
+        entryService.deleteEntry(entryId);
     }
 }
