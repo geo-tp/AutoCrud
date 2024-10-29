@@ -1,9 +1,9 @@
 package com.autocrud.main.services;
 
-import com.autocrud.main.models.UserDTO;
-import com.autocrud.main.exceptions.EmailAlreadyUsedException;
-import com.autocrud.main.exceptions.PasswordTooShortException;
-import com.autocrud.main.models.User;
+import com.autocrud.main.dtos.UserDTO;
+import com.autocrud.main.entities.User;
+import com.autocrud.main.exceptions.custom.EmailAlreadyUsedException;
+import com.autocrud.main.exceptions.custom.PasswordTooShortException;
 import com.autocrud.main.repositories.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

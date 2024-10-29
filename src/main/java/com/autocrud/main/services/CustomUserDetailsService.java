@@ -1,17 +1,17 @@
 package com.autocrud.main.services;
 
+import com.autocrud.main.entities.CustomUserDetails;
+import com.autocrud.main.entities.User;
+import com.autocrud.main.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.autocrud.main.entities.User;
-import com.autocrud.main.repositories.UserRepository;
-
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository; // Assuming you have a UserRepository to fetch users
+    private final UserRepository userRepository;
 
     public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-        // Implement a UserDetails object (e.g., using org.springframework.security.core.userdetails.User)
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), user.getAuthorities());
+        // Returning CustomUserDetails with userId, email, password, and authorities
+        return new CustomUserDetails(user.getId(), user.getEmail(), user.getPassword(), user.getAuthorities());
     }
 }

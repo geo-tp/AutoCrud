@@ -3,8 +3,8 @@ package com.autocrud.main.services;
 import com.autocrud.main.dtos.ChannelDTO;
 import com.autocrud.main.entities.Channel;
 import com.autocrud.main.entities.User;
-import com.autocrud.main.exceptions.ChannelNotFoundException;
-import com.autocrud.main.exceptions.UserNotFoundException;
+import com.autocrud.main.exceptions.custom.ChannelNotFoundException;
+import com.autocrud.main.exceptions.custom.UserNotFoundException;
 import com.autocrud.main.repositories.ChannelRepository;
 import com.autocrud.main.repositories.UserRepository;
 import com.autocrud.main.transformers.ChannelTransformer;
@@ -64,5 +64,12 @@ public class ChannelService {
 
         Channel updatedChannel = channelRepository.save(channel);
         return channelTransformer.convertToDTO(updatedChannel);
+    }
+
+    // Get the ownerId by channelId
+    public Long getOwnerIdByChannelId(Long channelId) {
+        Channel channel = channelRepository.findById(channelId)
+                .orElseThrow(() -> new ChannelNotFoundException(channelId));
+        return channel.getOwner().getId();
     }
 }

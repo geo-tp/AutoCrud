@@ -3,8 +3,8 @@ package com.autocrud.main.services;
 import com.autocrud.main.dtos.EntryDTO;
 import com.autocrud.main.entities.Entry;
 import com.autocrud.main.entities.Field;
-import com.autocrud.main.exceptions.EntryNotFoundException;
-import com.autocrud.main.exceptions.FieldNotFoundException;
+import com.autocrud.main.exceptions.custom.EntryNotFoundException;
+import com.autocrud.main.exceptions.custom.FieldNotFoundException;
 import com.autocrud.main.repositories.EntryRepository;
 import com.autocrud.main.repositories.FieldRepository;
 import org.springframework.stereotype.Service;
@@ -68,5 +68,12 @@ public class EntryService {
         Entry entry = entryRepository.findById(entryId)
             .orElseThrow(() -> new EntryNotFoundException(entryId));
         entryRepository.delete(entry);
+    }
+
+    // Get Channel ID
+    public Long getChannelIdByEntryId(Long entryId) {
+        Entry entry = entryRepository.findById(entryId)
+                .orElseThrow(() -> new EntryNotFoundException(entryId));
+        return entry.getField().getChannel().getId();
     }
 }

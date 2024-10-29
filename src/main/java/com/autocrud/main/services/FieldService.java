@@ -3,7 +3,7 @@ package com.autocrud.main.services;
 import com.autocrud.main.dtos.FieldDTO;
 import com.autocrud.main.entities.Channel;
 import com.autocrud.main.entities.Field;
-import com.autocrud.main.exceptions.FieldNotFoundException;
+import com.autocrud.main.exceptions.custom.FieldNotFoundException;
 import com.autocrud.main.repositories.FieldRepository;
 import com.autocrud.main.transformers.FieldTransformer;
 import org.springframework.stereotype.Service;
@@ -41,5 +41,11 @@ public class FieldService {
 
         Field updatedField = fieldRepository.save(field);
         return fieldTransformer.convertToDTO(updatedField);
+    }
+
+    public Long getChannelIdByFieldId(Long fieldId) {
+        Field field = fieldRepository.findById(fieldId)
+                .orElseThrow(() -> new FieldNotFoundException(fieldId));
+        return field.getChannel().getId();
     }
 }
