@@ -58,7 +58,10 @@ public class Channel {
         return fields;
     }
 
-    public void setFields(List<Field> fields) {
-        this.fields = fields;
+    public void setFields(List<Field> newFields) {
+        this.fields.clear();
+        if (newFields != null) {
+            this.fields.addAll(newFields);
+        }
     }
 }
