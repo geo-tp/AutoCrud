@@ -5,6 +5,13 @@ public class FieldDTO {
     private String fieldName;
     private String dataType;
 
+    public FieldDTO() {}
+
+    public FieldDTO(String fieldName, String dataType) {
+        this.fieldName = fieldName;
+        this.dataType = dataType;
+    }
+
     public Long getId() {
         return id;
     }
