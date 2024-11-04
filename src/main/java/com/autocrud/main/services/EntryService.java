@@ -35,8 +35,8 @@ public class EntryService {
     }
 
     public EntryDTO convertToDTO(Entry entry) {
-        return new EntryDTO(entry.getField().getId(), entry.getValue());
-    }
+        return new EntryDTO(entry.getId(), entry.getField().getId(), entry.getValue());
+    }    
 
     public List<EntryDTO> addEntriesFromDTO(List<EntryDTO> entryDTOs) {
         List<EntryDTO> createdEntries = new ArrayList<>();

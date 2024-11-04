@@ -44,10 +44,12 @@ public class ChannelService {
     }
 
     // Delete a channel by ID
-    public void deleteChannel(Long channelId) {
+    public ChannelDTO deleteChannel(Long channelId) {
         Channel channel = channelRepository.findById(channelId)
                 .orElseThrow(() -> new ChannelNotFoundException(channelId));
         channelRepository.delete(channel);
+
+        return channelTransformer.convertToDTO(channel);
     }
 
     // Update an existing channel
