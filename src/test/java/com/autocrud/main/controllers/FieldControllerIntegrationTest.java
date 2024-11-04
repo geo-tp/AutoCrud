@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -61,6 +62,7 @@ public class FieldControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "testuser@example.com", roles = {"USER"})
     void testGetFieldById() throws Exception {
         mockMvc.perform(get("/api/fields/" + testField.getId()))
                 .andExpect(status().isOk())
@@ -68,6 +70,7 @@ public class FieldControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "testuser@example.com", roles = {"USER"})
     void testUpdateField() throws Exception {
         FieldDTO updatedFieldDTO = new FieldDTO();
         updatedFieldDTO.setFieldName("Updated Field Name");

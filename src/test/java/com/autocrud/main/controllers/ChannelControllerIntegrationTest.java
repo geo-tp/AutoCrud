@@ -1,6 +1,5 @@
 package com.autocrud.main.controllers;
 
-import com.autocrud.main.config.SecurityConfig;
 import com.autocrud.main.dtos.ChannelDTO;
 import com.autocrud.main.entities.Channel;
 import com.autocrud.main.entities.User;
@@ -9,8 +8,6 @@ import com.autocrud.main.transformers.ChannelTransformer;
 import com.autocrud.main.transformers.FieldTransformer;
 import com.autocrud.main.repositories.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +19,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -34,9 +30,6 @@ public class ChannelControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private SecurityConfig securityConfig;
 
     @Autowired
     private ChannelRepository channelRepository;
@@ -66,6 +59,7 @@ public class ChannelControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "testuser@example.com", roles = {"USER"})
     void testCreateChannel() throws Exception {
         ChannelDTO channelDTO = new ChannelDTO();
         channelDTO.setChannelName("New Channel");

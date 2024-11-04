@@ -11,21 +11,17 @@ import com.autocrud.main.repositories.FieldRepository;
 import com.autocrud.main.repositories.UserRepository;
 import com.autocrud.main.services.EntryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.crypto.SecretKey;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -58,8 +54,6 @@ public class EntryControllerIntegrationTest {
     private EntryRepository entryRepository;
 
     private Long testUserId;
-    private String jwtToken;
-    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
     private Field field1;
     private Field field2;
@@ -92,18 +86,10 @@ public class EntryControllerIntegrationTest {
         defaultEntry.setField(field1);
         defaultEntry.setValue("value1");
         defaultEntry = entryRepository.save(defaultEntry);
-        
-        // Generer un token JWT pour l'utilisateur de test
-        jwtToken = Jwts.builder()
-            .setSubject("testuser@example.com")
-            .claim("userId", testUserId)
-            .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + 3600 * 1000))
-            .signWith(secretKey, SignatureAlgorithm.HS512)
-            .compact();
     }
 
     @Test
+    @WithMockUser(username = "testuser@example.com", roles = {"USER"})
     void testAddEntries() throws Exception {
         List<EntryDTO> entryDTOs = new ArrayList<>();
         entryDTOs.add(new EntryDTO(1L, field1.getId(), "value1"));
@@ -120,6 +106,7 @@ public class EntryControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "testuser@example.com", roles = {"USER"})
     void testGetEntryById() throws Exception {
         mockMvc.perform(get("/api/entries/" + defaultEntry.getId()))
                 .andExpect(status().isOk())
@@ -128,6 +115,7 @@ public class EntryControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "testuser@example.com", roles = {"USER"})
     void testUpdateEntry() throws Exception {
         EntryDTO entryDTO = new EntryDTO(null, field1.getId(), "value1");
         EntryDTO savedEntry = entryService.addEntriesFromDTO(List.of(entryDTO)).get(0);
@@ -142,6 +130,7 @@ public class EntryControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "testuser@example.com", roles = {"USER"})
     void testDeleteEntry() throws Exception {
         EntryDTO entryDTO = new EntryDTO(null, field1.getId(), "value1");
         EntryDTO savedEntry = entryService.addEntriesFromDTO(List.of(entryDTO)).get(0);
