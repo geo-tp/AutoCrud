@@ -36,13 +36,14 @@ class EntryServiceUnitTest {
 
     @Test
     void testCreateEntryFromDTO_FieldExists() {
-        Long fieldId = 1L;
-        String value = "Test Value";
-        EntryDTO entryDTO = new EntryDTO(fieldId, value);
         Field field = new Field();
-        field.setId(fieldId);
+        field.setId(1L);
+        fieldRepository.save(field);
 
-        when(fieldRepository.findById(fieldId)).thenReturn(Optional.of(field));
+        String value = "Test Value";
+        EntryDTO entryDTO = new EntryDTO(1L, field.getId(), value);
+
+        when(fieldRepository.findById(field.getId())).thenReturn(Optional.of(field));
 
         Entry createdEntry = new Entry(value, field);
         when(entryRepository.save(any(Entry.class))).thenReturn(createdEntry);
@@ -51,13 +52,14 @@ class EntryServiceUnitTest {
 
         assertNotNull(result);
         assertEquals(value, result.getValue());
-        assertEquals(fieldId, result.getField().getId());
+        assertEquals(field.getId(), result.getField().getId());
     }
 
     @Test
     void testCreateEntryFromDTO_FieldNotFound() {
+        Long entryId = 1L;
         Long fieldId = 1L;
-        EntryDTO entryDTO = new EntryDTO(fieldId, "Test Value");
+        EntryDTO entryDTO = new EntryDTO(entryId, fieldId, "Test Value");
 
         when(fieldRepository.findById(fieldId)).thenReturn(Optional.empty());
 

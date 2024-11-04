@@ -37,7 +37,7 @@ class AuthServiceUnitTest {
         secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
         authService = new AuthService(secretKey);
 
-        // Générer un token pour les tests
+        // Generer un token pour les tests
         token = Jwts.builder()
                 .setSubject(username)
                 .claim("userId", userId)
