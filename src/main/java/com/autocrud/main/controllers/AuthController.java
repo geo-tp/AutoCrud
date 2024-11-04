@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final AuthService jwtTokenService;
+    private final AuthService authService;
 
-    public AuthController(AuthenticationManager authenticationManager, AuthService jwtTokenService) {
+    public AuthController(AuthenticationManager authenticationManager, AuthService authService) {
         this.authenticationManager = authenticationManager;
-        this.jwtTokenService = jwtTokenService;
+        this.authService = authService;
     }
 
     @PostMapping("/login")
@@ -28,8 +28,8 @@ public class AuthController {
         );
 
         String username = authentication.getName();
-        Long userId = jwtTokenService.extractUserId(authentication);
-        String token = jwtTokenService.generateToken(username, userId);
+        Long userId = authService.extractUserId(authentication);
+        String token = authService.generateToken(username, userId);
         
         return new LoginResponseDTO(token);
     }

@@ -19,11 +19,11 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final AuthService jwtTokenService;
+    private final AuthService authService;
     private final UserDetailsService userDetailsService;
 
-    public JwtAuthenticationFilter(AuthService jwtTokenService, UserDetailsService userDetailsService) {
-        this.jwtTokenService = jwtTokenService;
+    public JwtAuthenticationFilter(AuthService authService, UserDetailsService userDetailsService) {
+        this.authService = authService;
         this.userDetailsService = userDetailsService;
     }
 
@@ -42,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             jwtToken = requestTokenHeader.substring(7);
             try {
-                username = jwtTokenService.getUsernameFromToken(jwtToken);
+                username = authService.getUsernameFromToken(jwtToken);
             } catch (IllegalArgumentException e) {
                 System.out.println("Unable to get JWT Token");
             } catch (ExpiredJwtException e) {
@@ -57,7 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             var userDetails = this.userDetailsService.loadUserByUsername(username);
 
-            if (jwtTokenService.validateToken(jwtToken, userDetails.getUsername())) {
+            if (authService.validateToken(jwtToken, userDetails.getUsername())) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

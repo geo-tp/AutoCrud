@@ -24,14 +24,14 @@ import jakarta.servlet.http.HttpServletRequest;
 @Component
 public class OwnershipAspect {
 
-    private final AuthService jwtTokenService;
+    private final AuthService authService;
     private final ChannelService channelService;
     private final FieldService fieldService;
     private final EntryService entryService;
 
-    public OwnershipAspect(AuthService jwtTokenService, ChannelService channelService, 
+    public OwnershipAspect(AuthService authService, ChannelService channelService, 
                            FieldService fieldService, EntryService entryService) {
-        this.jwtTokenService = jwtTokenService;
+        this.authService = authService;
         this.channelService = channelService;
         this.fieldService = fieldService;
         this.entryService = entryService;
@@ -49,7 +49,7 @@ public class OwnershipAspect {
     
         Long resourceId = getResourceId(joinPoint, resourceIdParamName);
     
-        Long currentUserId = jwtTokenService.getUserIdFromToken(token);
+        Long currentUserId = authService.getUserIdFromToken(token);
     
         // Check ownership based on the resource type
         switch (resourceType.toLowerCase()) {
