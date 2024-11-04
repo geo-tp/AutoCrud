@@ -1,8 +1,9 @@
 package com.autocrud.main.repositories;
 
-import com.autocrud.main.models.Field;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.autocrud.main.entities.Field;
 
 import java.util.List;
 
