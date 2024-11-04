@@ -7,13 +7,19 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpHeaders;
+
 import com.autocrud.main.services.ChannelService;
 import com.autocrud.main.services.EntryService;
 import com.autocrud.main.services.FieldService;
 
+import jakarta.servlet.http.HttpServletRequest;
+
+@Profile("!test")
 @Aspect
 @Component
 public class OwnershipAspect {
@@ -36,14 +42,14 @@ public class OwnershipAspect {
         String resourceType = checkOwnership.resourceType();
         String resourceIdParamName = checkOwnership.resourceId();
     
-        String username = getCurrentUsername();
-        if (username == null) {
+        String token = getCurrentToken();
+        if (token == null) {
             throw new UnauthorizedException("User not authenticated.");
         }
     
         Long resourceId = getResourceId(joinPoint, resourceIdParamName);
     
-        Long currentUserId = jwtTokenService.getUserIdFromToken(username);
+        Long currentUserId = jwtTokenService.getUserIdFromToken(token);
     
         // Check ownership based on the resource type
         switch (resourceType.toLowerCase()) {
@@ -61,12 +67,17 @@ public class OwnershipAspect {
         }
     }
     
-    private String getCurrentUsername() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails) {
-            return ((UserDetails) principal).getUsername();
+    private String getCurrentToken() {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes != null) {
+            HttpServletRequest request = attributes.getRequest();
+            String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+            
+            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+                return authorizationHeader.substring(7); // Exclure "Bearer "
+            }
         }
-        return null;
+        throw new UnauthorizedException("JWT token not found in the request headers.");
     }
     
     private Long getResourceId(JoinPoint joinPoint, String resourceIdParamName) {
