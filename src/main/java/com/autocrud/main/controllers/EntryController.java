@@ -1,5 +1,6 @@
 package com.autocrud.main.controllers;
 
+import com.autocrud.main.annotations.CheckOwnership;
 import com.autocrud.main.dtos.EntryDTO;
 import com.autocrud.main.services.EntryService;
 import org.springframework.web.bind.annotation.*;
@@ -23,18 +24,21 @@ public class EntryController {
     }
 
     // Get entry by ID
+    @CheckOwnership(resourceId = "id", resourceType = "entry")
     @GetMapping("/{entryId}")
     public EntryDTO getEntryById(@PathVariable Long entryId) {
         return entryService.getEntryById(entryId);
     }
 
     // Update entry
+    @CheckOwnership(resourceId = "id", resourceType = "entry")
     @PutMapping("/{entryId}")
     public EntryDTO updateEntry(@PathVariable Long entryId, @RequestBody EntryDTO entryDTO) {
         return entryService.updateEntry(entryId, entryDTO);
     }
 
     // Delete entry by ID
+    @CheckOwnership(resourceId = "id", resourceType = "entry")
     @DeleteMapping("/{entryId}")
     public void deleteEntry(@PathVariable Long entryId) {
         entryService.deleteEntry(entryId);
