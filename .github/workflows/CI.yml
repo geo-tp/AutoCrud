@@ -21,16 +21,15 @@ jobs:
         cache: maven
 
     - name: Set up MySQL
-      uses: mirromutth/mysql-action@v1.1.0
-      with:
-        mysql version: '8'
-        host port: 3306
-        root password: 'root'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y mysql-server
+        sudo service mysql start
 
     - name: Create MySQL database
       run: |
         sudo apt-get install mysql-client
-        mysql -h 127.0.0.1 -P 3306 -u root -proot -e "CREATE DATABASE IF NOT EXISTS autocrud;"
+        mysql -u root -e "CREATE DATABASE IF NOT EXISTS autocrud;"
     
     # Run tests
     - name: Run tests with Maven
