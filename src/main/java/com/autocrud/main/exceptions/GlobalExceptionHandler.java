@@ -13,6 +13,7 @@ import com.autocrud.main.exceptions.custom.EmailAlreadyUsedException;
 import com.autocrud.main.exceptions.custom.EntryNotFoundException;
 import com.autocrud.main.exceptions.custom.FieldNotFoundException;
 import com.autocrud.main.exceptions.custom.PasswordTooShortException;
+import com.autocrud.main.exceptions.custom.ResourceNotFoundException;
 import com.autocrud.main.exceptions.custom.UserNotFoundException;
 
 import java.util.HashMap;
@@ -80,5 +81,12 @@ public class GlobalExceptionHandler {
             errorResponse.put("error", "Authentication failed");
             return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
         }
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }

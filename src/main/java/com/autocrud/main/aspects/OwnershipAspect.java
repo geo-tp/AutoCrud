@@ -1,6 +1,7 @@
 package com.autocrud.main.aspects;
 
 import com.autocrud.main.annotations.CheckOwnership;
+import com.autocrud.main.exceptions.custom.ResourceNotFoundException;
 import com.autocrud.main.exceptions.custom.UnauthorizedException;
 import com.autocrud.main.services.AuthService;
 import org.aspectj.lang.JoinPoint;
@@ -63,7 +64,7 @@ public class OwnershipAspect {
                 checkEntryOwnership(resourceId, currentUserId);
                 break;
             default:
-                throw new IllegalArgumentException("Unknown resource type: " + resourceType);
+                throw new ResourceNotFoundException(resourceType);
         }
     }
     
@@ -91,7 +92,7 @@ public class OwnershipAspect {
                 return (Long) args[i];
             }
         }
-        throw new IllegalArgumentException("Resource ID parameter '" + resourceIdParamName + "' not found.");
+        throw new ResourceNotFoundException(resourceIdParamName);
     }
     
     
