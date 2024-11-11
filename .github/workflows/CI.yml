@@ -29,7 +29,7 @@ jobs:
     - name: Create MySQL database
       run: |
         sudo apt-get install mysql-client
-        mysql -u root -e "CREATE DATABASE IF NOT EXISTS autocrud;"
+        mysql -u root -proot -e "CREATE DATABASE IF NOT EXISTS autocrud;"
     
     # Run tests
     - name: Run tests with Maven
