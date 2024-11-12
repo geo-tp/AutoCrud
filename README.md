@@ -1,3 +1,5 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=geo-tp_AutoCrud&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=geo-tp_AutoCrud)
+
 # AutoCRUD
 
 AutoCRUD is a Spring Boot-based REST API that automatically generates and manages CRUD operations for custom data structures defined by users. It allows users to define custom fields, channels, and entries, and easily manage authentication and ownership checks for secure data manipulation.
