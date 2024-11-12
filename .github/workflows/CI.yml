@@ -68,4 +68,5 @@ jobs:
       run: |
         mvn sonar:sonar -Dsonar.projectKey=geo-tp_AutoCrud \
                         -Dsonar.organization=geo-tp \
+                        -Dsonar.host.url=https://sonarcloud.io \
                         -Dsonar.login=${{ secrets.SONAR_TOKEN }}
