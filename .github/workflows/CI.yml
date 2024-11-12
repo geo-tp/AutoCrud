@@ -31,9 +31,16 @@ jobs:
         sudo apt-get install mysql-client
         mysql -u root -proot -e "CREATE DATABASE IF NOT EXISTS autocrud;"
     
-    # Run tests
-    - name: Run tests with Maven
-      run: mvn -B test --file pom.xml
+    # Run tests and generate Jacoco coverage report
+    - name: Run tests with Maven and generate coverage report
+      run: mvn test jacoco:report
+
+    # Upload coverage report as an artifact
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: target/site/jacoco/index.html
 
   build:
     runs-on: ubuntu-latest
