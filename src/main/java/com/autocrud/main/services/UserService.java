@@ -1,6 +1,6 @@
 package com.autocrud.main.services;
 
-import com.autocrud.main.dtos.UserDTO;
+import com.autocrud.main.dtos.UserResponseDTO;
 import com.autocrud.main.entities.User;
 import com.autocrud.main.exceptions.custom.EmailAlreadyUsedException;
 import com.autocrud.main.exceptions.custom.PasswordTooShortException;
@@ -21,7 +21,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UserDTO createUser(String email, String password, List<String> roles) {
+    public UserResponseDTO createUser(String email, String password, List<String> roles) {
         if (userRepository.findByEmail(email).isPresent()) {
             throw new EmailAlreadyUsedException();
         }
@@ -36,6 +36,6 @@ public class UserService {
 
         userRepository.save(user);
 
-        return new UserDTO(user.getEmail(), user.getRoles());
+        return new UserResponseDTO(user.getEmail(), user.getRoles());
     }
 }

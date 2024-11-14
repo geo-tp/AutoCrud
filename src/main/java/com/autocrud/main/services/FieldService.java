@@ -1,6 +1,7 @@
 package com.autocrud.main.services;
 
-import com.autocrud.main.dtos.FieldDTO;
+import com.autocrud.main.dtos.FieldResponseDTO;
+import com.autocrud.main.dtos.UpdateFieldRequestDTO;
 import com.autocrud.main.entities.Channel;
 import com.autocrud.main.entities.Field;
 import com.autocrud.main.exceptions.custom.FieldNotFoundException;
@@ -21,23 +22,23 @@ public class FieldService {
         this.fieldTransformer = fieldTransformer;
     }
 
-    public List<Field> createFieldsFromDTO(List<FieldDTO> fieldDTOs, Channel channel) {
+    public List<Field> createFieldsFromDTO(List<FieldResponseDTO> fieldDTOs, Channel channel) {
         return fieldRepository.saveAll(fieldTransformer.convertToEntities(fieldDTOs, channel));
     }
 
-    public FieldDTO getFieldById(Long fieldId) {
+    public FieldResponseDTO getFieldById(Long fieldId) {
         Field field = fieldRepository.findById(fieldId)
             .orElseThrow(() -> new FieldNotFoundException(fieldId));
 
         return fieldTransformer.convertToDTO(field);
     }
 
-    public FieldDTO updateFieldById(Long fieldId, FieldDTO fieldDTO) {
+    public FieldResponseDTO updateFieldById(Long fieldId, UpdateFieldRequestDTO fieldDTO) {
         Field field = fieldRepository.findById(fieldId)
             .orElseThrow(() -> new FieldNotFoundException(fieldId));
 
         field.setFieldName(fieldDTO.getFieldName());
-        field.setDataType(fieldDTO.getDataType());
+        field.setDataType(fieldDTO.getType());
 
         Field updatedField = fieldRepository.save(field);
         return fieldTransformer.convertToDTO(updatedField);

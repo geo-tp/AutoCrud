@@ -1,6 +1,8 @@
 package com.autocrud.main.services;
 
-import com.autocrud.main.dtos.EntryDTO;
+import com.autocrud.main.dtos.CreateEntryRequestDTO;
+import com.autocrud.main.dtos.EntryResponseDTO;
+import com.autocrud.main.dtos.UpdateEntryRequestDTO;
 import com.autocrud.main.entities.Entry;
 import com.autocrud.main.entities.Field;
 import com.autocrud.main.exceptions.custom.EntryNotFoundException;
@@ -24,7 +26,7 @@ public class EntryService {
         this.fieldRepository = fieldRepository;
     }
 
-    public Entry createEntryFromDTO(EntryDTO entryDTO) {
+    public Entry createEntryFromDTO(CreateEntryRequestDTO entryDTO) {
         Optional<Field> fieldOptional = fieldRepository.findById(entryDTO.getFieldId());
         if (!fieldOptional.isPresent()) {
             throw new FieldNotFoundException(entryDTO.getFieldId());
@@ -34,13 +36,13 @@ public class EntryService {
         return entryRepository.save(entry);
     }
 
-    public EntryDTO convertToDTO(Entry entry) {
-        return new EntryDTO(entry.getId(), entry.getField().getId(), entry.getValue());
+    public EntryResponseDTO convertToDTO(Entry entry) {
+        return new EntryResponseDTO(entry.getId(), entry.getField().getId(), entry.getValue());
     }    
 
-    public List<EntryDTO> addEntriesFromDTO(List<EntryDTO> entryDTOs) {
-        List<EntryDTO> createdEntries = new ArrayList<>();
-        for (EntryDTO entryDTO : entryDTOs) {
+    public List<EntryResponseDTO> addEntriesFromDTO(List<CreateEntryRequestDTO> entryDTOs) {
+        List<EntryResponseDTO> createdEntries = new ArrayList<>();
+        for (CreateEntryRequestDTO entryDTO : entryDTOs) {
             Entry createdEntry = createEntryFromDTO(entryDTO);
             createdEntries.add(convertToDTO(createdEntry));
         }
@@ -48,14 +50,14 @@ public class EntryService {
     }
 
     // Get entry by ID
-    public EntryDTO getEntryById(Long entryId) {
+    public EntryResponseDTO getEntryById(Long entryId) {
         Entry entry = entryRepository.findById(entryId)
                 .orElseThrow(() -> new EntryNotFoundException(entryId));
         return convertToDTO(entry);
     }
 
     // Update entry
-    public EntryDTO updateEntry(Long entryId, EntryDTO entryDTO) {
+    public EntryResponseDTO updateEntry(Long entryId, UpdateEntryRequestDTO entryDTO) {
         Entry entry = entryRepository.findById(entryId)
                 .orElseThrow(() -> new EntryNotFoundException(entryId));
         entry.setValue(entryDTO.getValue());

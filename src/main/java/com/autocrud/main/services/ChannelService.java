@@ -1,6 +1,6 @@
 package com.autocrud.main.services;
 
-import com.autocrud.main.dtos.ChannelDTO;
+import com.autocrud.main.dtos.ChannelResponseDTO;
 import com.autocrud.main.entities.Channel;
 import com.autocrud.main.entities.User;
 import com.autocrud.main.exceptions.custom.ChannelNotFoundException;
@@ -26,7 +26,7 @@ public class ChannelService {
     }
 
     // Create a new channel
-    public ChannelDTO createChannelFromDTO(ChannelDTO channelDTO) {
+    public ChannelResponseDTO createChannelFromDTO(ChannelResponseDTO channelDTO) {
         User owner = userRepository.findById(channelDTO.getOwnerId())
             .orElseThrow(() -> new UserNotFoundException(channelDTO.getOwnerId()));
 
@@ -37,14 +37,14 @@ public class ChannelService {
     }
 
     // Get a channel by ID
-    public ChannelDTO getChannelById(Long channelId) {
+    public ChannelResponseDTO getChannelById(Long channelId) {
         Channel channel = channelRepository.findById(channelId)
                 .orElseThrow(() -> new ChannelNotFoundException(channelId));
         return channelTransformer.convertToDTO(channel);
     }
 
     // Delete a channel by ID
-    public ChannelDTO deleteChannel(Long channelId) {
+    public ChannelResponseDTO deleteChannel(Long channelId) {
         Channel channel = channelRepository.findById(channelId)
                 .orElseThrow(() -> new ChannelNotFoundException(channelId));
         channelRepository.delete(channel);
@@ -53,7 +53,7 @@ public class ChannelService {
     }
 
     // Update an existing channel
-    public ChannelDTO updateChannel(Long channelId, ChannelDTO channelDTO) {
+    public ChannelResponseDTO updateChannel(Long channelId, ChannelResponseDTO channelDTO) {
         Channel channel = channelRepository.findById(channelId)
                 .orElseThrow(() -> new ChannelNotFoundException(channelId));
 
