@@ -1,6 +1,6 @@
 package com.autocrud.main.services;
 
-import com.autocrud.main.dtos.UserDTO;
+import com.autocrud.main.dtos.UserResponseDTO;
 import com.autocrud.main.entities.User;
 import com.autocrud.main.exceptions.custom.EmailAlreadyUsedException;
 import com.autocrud.main.exceptions.custom.PasswordTooShortException;
@@ -46,7 +46,7 @@ class UserServiceUnitTest {
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
         when(passwordEncoder.encode(password)).thenReturn(encodedPassword);
 
-        UserDTO userDTO = userService.createUser(email, password, roles);
+        UserResponseDTO userDTO = userService.createUser(email, password, roles);
 
         assertEquals(email, userDTO.getEmail());
         assertEquals(roles, userDTO.getRoles());

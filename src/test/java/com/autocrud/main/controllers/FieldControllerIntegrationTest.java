@@ -1,6 +1,6 @@
 package com.autocrud.main.controllers;
 
-import com.autocrud.main.dtos.FieldDTO;
+import com.autocrud.main.dtos.FieldResponseDTO;
 import com.autocrud.main.entities.Channel;
 import com.autocrud.main.entities.Field;
 import com.autocrud.main.entities.User;
@@ -72,7 +72,7 @@ public class FieldControllerIntegrationTest {
     @Test
     @WithMockUser(username = "testuser@example.com", roles = {"USER"})
     void testUpdateField() throws Exception {
-        FieldDTO updatedFieldDTO = new FieldDTO();
+        FieldResponseDTO updatedFieldDTO = new FieldResponseDTO();
         updatedFieldDTO.setFieldName("Updated Field Name");
 
         mockMvc.perform(put("/api/fields/" + testField.getId())

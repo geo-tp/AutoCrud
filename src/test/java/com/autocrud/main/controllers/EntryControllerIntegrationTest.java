@@ -1,6 +1,7 @@
 package com.autocrud.main.controllers;
 
-import com.autocrud.main.dtos.EntryDTO;
+import com.autocrud.main.dtos.CreateEntryRequestDTO;
+import com.autocrud.main.dtos.EntryResponseDTO;
 import com.autocrud.main.entities.Channel;
 import com.autocrud.main.entities.Entry;
 import com.autocrud.main.entities.Field;
@@ -91,9 +92,9 @@ public class EntryControllerIntegrationTest {
     @Test
     @WithMockUser(username = "testuser@example.com", roles = {"USER"})
     void testAddEntries() throws Exception {
-        List<EntryDTO> entryDTOs = new ArrayList<>();
-        entryDTOs.add(new EntryDTO(1L, field1.getId(), "value1"));
-        entryDTOs.add(new EntryDTO(2L, field2.getId(), "value2"));
+        List<CreateEntryRequestDTO> entryDTOs = new ArrayList<>();
+        entryDTOs.add(new CreateEntryRequestDTO(1L, field1.getId(), "value1"));
+        entryDTOs.add(new CreateEntryRequestDTO(2L, field2.getId(), "value2"));
 
         mockMvc.perform(post("/api/entries")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -117,10 +118,13 @@ public class EntryControllerIntegrationTest {
     @Test
     @WithMockUser(username = "testuser@example.com", roles = {"USER"})
     void testUpdateEntry() throws Exception {
-        EntryDTO entryDTO = new EntryDTO(null, field1.getId(), "value1");
-        EntryDTO savedEntry = entryService.addEntriesFromDTO(List.of(entryDTO)).get(0);
+        CreateEntryRequestDTO entryDTO = new CreateEntryRequestDTO();
+        entryDTO.setFieldId((field1.getId()));
+        entryDTO.setValue("value1");
 
-        EntryDTO updatedEntryDTO = new EntryDTO(null, field1.getId(), "newValue");
+        EntryResponseDTO savedEntry = entryService.addEntriesFromDTO(List.of(entryDTO)).get(0);
+
+        EntryResponseDTO updatedEntryDTO = new EntryResponseDTO(null, field1.getId(), "newValue");
 
         mockMvc.perform(put("/api/entries/" + savedEntry.getId())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -132,8 +136,11 @@ public class EntryControllerIntegrationTest {
     @Test
     @WithMockUser(username = "testuser@example.com", roles = {"USER"})
     void testDeleteEntry() throws Exception {
-        EntryDTO entryDTO = new EntryDTO(null, field1.getId(), "value1");
-        EntryDTO savedEntry = entryService.addEntriesFromDTO(List.of(entryDTO)).get(0);
+        CreateEntryRequestDTO entryDTO = new CreateEntryRequestDTO();
+        entryDTO.setFieldId((field1.getId()));
+        entryDTO.setValue("value1");
+
+        EntryResponseDTO savedEntry = entryService.addEntriesFromDTO(List.of(entryDTO)).get(0);
 
         mockMvc.perform(delete("/api/entries/" + savedEntry.getId()))
                 .andExpect(status().isOk());

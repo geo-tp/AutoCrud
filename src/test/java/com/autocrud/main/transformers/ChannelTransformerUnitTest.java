@@ -1,7 +1,7 @@
 package com.autocrud.main.transformers;
 
-import com.autocrud.main.dtos.ChannelDTO;
-import com.autocrud.main.dtos.FieldDTO;
+import com.autocrud.main.dtos.ChannelResponseDTO;
+import com.autocrud.main.dtos.FieldResponseDTO;
 import com.autocrud.main.entities.Channel;
 import com.autocrud.main.entities.User;
 import com.autocrud.main.entities.Field;
@@ -45,11 +45,11 @@ class ChannelTransformerTest {
         List<Field> fields = Arrays.asList(field);
         channel.setFields(fields);
 
-        FieldDTO fieldDTO = new FieldDTO();
+        FieldResponseDTO fieldDTO = new FieldResponseDTO();
         fieldDTO.setId(100L);
         when(fieldTransformer.convertToDTOs(fields)).thenReturn(Arrays.asList(fieldDTO));
 
-        ChannelDTO channelDTO = channelTransformer.convertToDTO(channel);
+        ChannelResponseDTO channelDTO = channelTransformer.convertToDTO(channel);
 
         assertEquals(channel.getId(), channelDTO.getId());
         assertEquals(channel.getChannelName(), channelDTO.getChannelName());
@@ -60,7 +60,7 @@ class ChannelTransformerTest {
 
     @Test
     void testConvertToEntity() {
-        ChannelDTO channelDTO = new ChannelDTO();
+        ChannelResponseDTO channelDTO = new ChannelResponseDTO();
         channelDTO.setChannelName("Test Channel");
 
         User owner = new User();

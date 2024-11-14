@@ -1,6 +1,6 @@
 package com.autocrud.main.controllers;
 
-import com.autocrud.main.dtos.ChannelDTO;
+import com.autocrud.main.dtos.ChannelResponseDTO;
 import com.autocrud.main.entities.Channel;
 import com.autocrud.main.entities.User;
 import com.autocrud.main.repositories.ChannelRepository;
@@ -61,7 +61,7 @@ public class ChannelControllerIntegrationTest {
     @Test
     @WithMockUser(username = "testuser@example.com", roles = {"USER"})
     void testCreateChannel() throws Exception {
-        ChannelDTO channelDTO = new ChannelDTO();
+        ChannelResponseDTO channelDTO = new ChannelResponseDTO();
         channelDTO.setChannelName("New Channel");
         channelDTO.setOwnerId(testUserId);
         channelDTO.setFields(new ArrayList<>());
@@ -98,7 +98,7 @@ public class ChannelControllerIntegrationTest {
         Channel channel = new Channel("Old Channel", userRepository.findById(testUserId).get());
         channel = channelRepository.save(channel);
 
-        ChannelDTO channelDTO = channelTransformer.convertToDTO(channel);
+        ChannelResponseDTO channelDTO = channelTransformer.convertToDTO(channel);
         channelDTO.setChannelName("Updated Channel");
         channelDTO.setFields(fieldTransformer.convertToDTOs((channel.getFields())));
 
@@ -113,7 +113,7 @@ public class ChannelControllerIntegrationTest {
     @Test
     @WithMockUser(username = "testuser@example.com", roles = {"USER"})
     void testUpdateChannel_NotFound() throws Exception {
-        ChannelDTO channelDTO = new ChannelDTO();
+        ChannelResponseDTO channelDTO = new ChannelResponseDTO();
         channelDTO.setChannelName("Non-existent Channel");
         channelDTO.setOwnerId(testUserId);
 

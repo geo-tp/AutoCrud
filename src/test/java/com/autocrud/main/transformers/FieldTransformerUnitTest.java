@@ -1,6 +1,6 @@
 package com.autocrud.main.transformers;
 
-import com.autocrud.main.dtos.FieldDTO;
+import com.autocrud.main.dtos.FieldResponseDTO;
 import com.autocrud.main.entities.Channel;
 import com.autocrud.main.entities.Field;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +30,7 @@ class FieldTransformerTest {
         field.setFieldName("FieldName");
         field.setDataType("String");
 
-        FieldDTO fieldDTO = fieldTransformer.convertToDTO(field);
+        FieldResponseDTO fieldDTO = fieldTransformer.convertToDTO(field);
 
         assertEquals(field.getId(), fieldDTO.getId());
         assertEquals(field.getFieldName(), fieldDTO.getFieldName());
@@ -49,7 +49,7 @@ class FieldTransformerTest {
         field2.setFieldName("FieldName2");
         field2.setDataType("Integer");
 
-        List<FieldDTO> fieldDTOs = fieldTransformer.convertToDTOs(Arrays.asList(field1, field2));
+        List<FieldResponseDTO> fieldDTOs = fieldTransformer.convertToDTOs(Arrays.asList(field1, field2));
 
         assertEquals(2, fieldDTOs.size());
         assertEquals("FieldName1", fieldDTOs.get(0).getFieldName());
@@ -58,7 +58,7 @@ class FieldTransformerTest {
 
     @Test
     void testConvertToEntity() {
-        FieldDTO fieldDTO = new FieldDTO();
+        FieldResponseDTO fieldDTO = new FieldResponseDTO();
         fieldDTO.setId(1L);
         fieldDTO.setFieldName("FieldName");
         fieldDTO.setDataType("String");
@@ -72,12 +72,12 @@ class FieldTransformerTest {
 
     @Test
     void testConvertToEntities() {
-        FieldDTO fieldDTO1 = new FieldDTO();
+        FieldResponseDTO fieldDTO1 = new FieldResponseDTO();
         fieldDTO1.setId(1L);
         fieldDTO1.setFieldName("FieldName1");
         fieldDTO1.setDataType("String");
 
-        FieldDTO fieldDTO2 = new FieldDTO();
+        FieldResponseDTO fieldDTO2 = new FieldResponseDTO();
         fieldDTO2.setId(2L);
         fieldDTO2.setFieldName("FieldName2");
         fieldDTO2.setDataType("Integer");

@@ -1,6 +1,6 @@
 package com.autocrud.main.services;
 
-import com.autocrud.main.dtos.ChannelDTO;
+import com.autocrud.main.dtos.ChannelResponseDTO;
 import com.autocrud.main.entities.Channel;
 import com.autocrud.main.entities.User;
 import com.autocrud.main.exceptions.custom.ChannelNotFoundException;
@@ -44,7 +44,7 @@ class ChannelServiceUnitTest {
     @Test
     void testCreateChannelFromDTO_Success() {
         Long ownerId = 1L;
-        ChannelDTO channelDTO = new ChannelDTO();
+        ChannelResponseDTO channelDTO = new ChannelResponseDTO();
         channelDTO.setOwnerId(ownerId);
 
         User owner = new User();
@@ -52,14 +52,14 @@ class ChannelServiceUnitTest {
 
         Channel channel = new Channel();
         Channel savedChannel = new Channel();
-        ChannelDTO savedChannelDTO = new ChannelDTO();
+        ChannelResponseDTO savedChannelDTO = new ChannelResponseDTO();
 
         when(userRepository.findById(ownerId)).thenReturn(Optional.of(owner));
         when(channelTransformer.convertToEntity(channelDTO, owner)).thenReturn(channel);
         when(channelRepository.save(channel)).thenReturn(savedChannel);
         when(channelTransformer.convertToDTO(savedChannel)).thenReturn(savedChannelDTO);
 
-        ChannelDTO result = channelService.createChannelFromDTO(channelDTO);
+        ChannelResponseDTO result = channelService.createChannelFromDTO(channelDTO);
 
         assertNotNull(result);
         assertEquals(savedChannelDTO, result);
@@ -69,7 +69,7 @@ class ChannelServiceUnitTest {
     @Test
     void testCreateChannelFromDTO_UserNotFound() {
         Long ownerId = 1L;
-        ChannelDTO channelDTO = new ChannelDTO();
+        ChannelResponseDTO channelDTO = new ChannelResponseDTO();
         channelDTO.setOwnerId(ownerId);
 
         when(userRepository.findById(ownerId)).thenReturn(Optional.empty());
@@ -81,12 +81,12 @@ class ChannelServiceUnitTest {
     void testGetChannelById_Success() {
         Long channelId = 1L;
         Channel channel = new Channel();
-        ChannelDTO channelDTO = new ChannelDTO();
+        ChannelResponseDTO channelDTO = new ChannelResponseDTO();
 
         when(channelRepository.findById(channelId)).thenReturn(Optional.of(channel));
         when(channelTransformer.convertToDTO(channel)).thenReturn(channelDTO);
 
-        ChannelDTO result = channelService.getChannelById(channelId);
+        ChannelResponseDTO result = channelService.getChannelById(channelId);
 
         assertNotNull(result);
         assertEquals(channelDTO, result);
@@ -124,7 +124,7 @@ class ChannelServiceUnitTest {
     void testUpdateChannel_Success() {
         Long channelId = 1L;
         Long ownerId = 2L;
-        ChannelDTO channelDTO = new ChannelDTO();
+        ChannelResponseDTO channelDTO = new ChannelResponseDTO();
         channelDTO.setOwnerId(ownerId);
 
         User owner = new User();
@@ -132,14 +132,14 @@ class ChannelServiceUnitTest {
 
         Channel channel = new Channel();
         Channel updatedChannel = new Channel();
-        ChannelDTO updatedChannelDTO = new ChannelDTO();
+        ChannelResponseDTO updatedChannelDTO = new ChannelResponseDTO();
 
         when(channelRepository.findById(channelId)).thenReturn(Optional.of(channel));
         when(userRepository.findById(ownerId)).thenReturn(Optional.of(owner));
         when(channelRepository.save(channel)).thenReturn(updatedChannel);
         when(channelTransformer.convertToDTO(updatedChannel)).thenReturn(updatedChannelDTO);
 
-        ChannelDTO result = channelService.updateChannel(channelId, channelDTO);
+        ChannelResponseDTO result = channelService.updateChannel(channelId, channelDTO);
 
         assertNotNull(result);
         assertEquals(updatedChannelDTO, result);
@@ -148,7 +148,7 @@ class ChannelServiceUnitTest {
     @Test
     void testUpdateChannel_ChannelNotFound() {
         Long channelId = 1L;
-        ChannelDTO channelDTO = new ChannelDTO();
+        ChannelResponseDTO channelDTO = new ChannelResponseDTO();
 
         when(channelRepository.findById(channelId)).thenReturn(Optional.empty());
 
@@ -159,7 +159,7 @@ class ChannelServiceUnitTest {
     void testUpdateChannel_UserNotFound() {
         Long channelId = 1L;
         Long ownerId = 2L;
-        ChannelDTO channelDTO = new ChannelDTO();
+        ChannelResponseDTO channelDTO = new ChannelResponseDTO();
         channelDTO.setOwnerId(ownerId);
 
         when(channelRepository.findById(channelId)).thenReturn(Optional.of(new Channel()));

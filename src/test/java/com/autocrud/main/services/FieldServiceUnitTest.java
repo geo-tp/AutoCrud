@@ -1,6 +1,7 @@
 package com.autocrud.main.services;
 
-import com.autocrud.main.dtos.FieldDTO;
+import com.autocrud.main.dtos.FieldResponseDTO;
+import com.autocrud.main.dtos.UpdateFieldRequestDTO;
 import com.autocrud.main.entities.Channel;
 import com.autocrud.main.entities.Field;
 import com.autocrud.main.exceptions.custom.FieldNotFoundException;
@@ -41,9 +42,9 @@ class FieldServiceUnitTest {
 
     @Test
     void testCreateFieldsFromDTO() {
-        FieldDTO fieldDTO1 = new FieldDTO("Field1", "String");
-        FieldDTO fieldDTO2 = new FieldDTO("Field2", "Integer");
-        List<FieldDTO> fieldDTOs = Arrays.asList(fieldDTO1, fieldDTO2);
+        FieldResponseDTO fieldDTO1 = new FieldResponseDTO("Field1", "String");
+        FieldResponseDTO fieldDTO2 = new FieldResponseDTO("Field2", "Integer");
+        List<FieldResponseDTO> fieldDTOs = Arrays.asList(fieldDTO1, fieldDTO2);
 
         Field field1 = new Field("Field1", "String", channel);
         Field field2 = new Field("Field2", "Integer", channel);
@@ -64,12 +65,12 @@ class FieldServiceUnitTest {
         Long fieldId = 1L;
         Field field = new Field("TestField", "String", channel);
         field.setId(fieldId);
-        FieldDTO fieldDTO = new FieldDTO("TestField", "String");
+        FieldResponseDTO fieldResponseDTO = new FieldResponseDTO("TestField", "String");
 
         when(fieldRepository.findById(fieldId)).thenReturn(Optional.of(field));
-        when(fieldTransformer.convertToDTO(field)).thenReturn(fieldDTO);
+        when(fieldTransformer.convertToDTO(field)).thenReturn(fieldResponseDTO);
 
-        FieldDTO result = fieldService.getFieldById(fieldId);
+        FieldResponseDTO result = fieldService.getFieldById(fieldId);
 
         assertNotNull(result);
         assertEquals("TestField", result.getFieldName());
@@ -87,15 +88,19 @@ class FieldServiceUnitTest {
     @Test
     void testUpdateFieldById_FieldExists() {
         Long fieldId = 1L;
-        FieldDTO fieldDTO = new FieldDTO("UpdatedField", "Integer");
+        UpdateFieldRequestDTO fieldRequestDTO = new UpdateFieldRequestDTO();
+        fieldRequestDTO.setFieldName("UpdateField");
+        fieldRequestDTO.setType("Integer");
+
+        FieldResponseDTO fieldResponseDTO = new FieldResponseDTO("UpdatedField", "Integer");
         Field field = new Field("OriginalField", "String", channel);
         field.setId(fieldId);
 
         when(fieldRepository.findById(fieldId)).thenReturn(Optional.of(field));
         when(fieldRepository.save(field)).thenReturn(field);
-        when(fieldTransformer.convertToDTO(field)).thenReturn(fieldDTO);
+        when(fieldTransformer.convertToDTO(field)).thenReturn(fieldResponseDTO);
 
-        FieldDTO result = fieldService.updateFieldById(fieldId, fieldDTO);
+        FieldResponseDTO result = fieldService.updateFieldById(fieldId, fieldRequestDTO);
 
         assertEquals("UpdatedField", result.getFieldName());
         assertEquals("Integer", result.getDataType());
@@ -104,11 +109,13 @@ class FieldServiceUnitTest {
     @Test
     void testUpdateFieldById_FieldNotFound() {
         Long fieldId = 1L;
-        FieldDTO fieldDTO = new FieldDTO("UpdatedField", "Integer");
+        UpdateFieldRequestDTO fieldRequestDTO = new UpdateFieldRequestDTO();
+        fieldRequestDTO.setFieldName("UpdateField");
+        fieldRequestDTO.setType("Integer");
 
         when(fieldRepository.findById(fieldId)).thenReturn(Optional.empty());
 
-        assertThrows(FieldNotFoundException.class, () -> fieldService.updateFieldById(fieldId, fieldDTO));
+        assertThrows(FieldNotFoundException.class, () -> fieldService.updateFieldById(fieldId, fieldRequestDTO));
     }
 
     @Test

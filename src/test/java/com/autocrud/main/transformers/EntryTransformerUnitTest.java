@@ -1,6 +1,6 @@
 package com.autocrud.main.transformers;
 
-import com.autocrud.main.dtos.EntryDTO;
+import com.autocrud.main.dtos.EntryResponseDTO;
 import com.autocrud.main.entities.Entry;
 import com.autocrud.main.entities.Field;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +30,7 @@ class EntryTransformerTest {
         entry.setField(field);
         entry.setValue("Test Value");
 
-        EntryDTO entryDTO = entryTransformer.convertToDTO(entry);
+        EntryResponseDTO entryDTO = entryTransformer.convertToDTO(entry);
 
         assertEquals(entry.getId(), entryDTO.getId());
         assertEquals(entry.getField().getId(), entryDTO.getFieldId());
@@ -39,7 +39,7 @@ class EntryTransformerTest {
 
     @Test
     void testConvertToEntity() {
-        EntryDTO entryDTO = new EntryDTO();
+        EntryResponseDTO entryDTO = new EntryResponseDTO();
         entryDTO.setValue("Updated Value");
 
         Entry entry = new Entry();

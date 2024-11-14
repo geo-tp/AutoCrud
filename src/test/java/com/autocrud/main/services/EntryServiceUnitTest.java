@@ -1,6 +1,8 @@
 package com.autocrud.main.services;
 
-import com.autocrud.main.dtos.EntryDTO;
+import com.autocrud.main.dtos.EntryResponseDTO;
+import com.autocrud.main.dtos.UpdateEntryRequestDTO;
+import com.autocrud.main.dtos.CreateEntryRequestDTO;
 import com.autocrud.main.entities.Entry;
 import com.autocrud.main.entities.Field;
 import com.autocrud.main.entities.Channel;
@@ -41,7 +43,9 @@ class EntryServiceUnitTest {
         fieldRepository.save(field);
 
         String value = "Test Value";
-        EntryDTO entryDTO = new EntryDTO(1L, field.getId(), value);
+        CreateEntryRequestDTO entryDTO = new CreateEntryRequestDTO();
+        entryDTO.setFieldId(field.getId());
+        entryDTO.setValue(value);
 
         when(fieldRepository.findById(field.getId())).thenReturn(Optional.of(field));
 
@@ -57,10 +61,10 @@ class EntryServiceUnitTest {
 
     @Test
     void testCreateEntryFromDTO_FieldNotFound() {
-        Long entryId = 1L;
         Long fieldId = 1L;
-        EntryDTO entryDTO = new EntryDTO(entryId, fieldId, "Test Value");
-
+        CreateEntryRequestDTO entryDTO = new CreateEntryRequestDTO();
+        entryDTO.setFieldId(fieldId);
+        entryDTO.setValue("value");
         when(fieldRepository.findById(fieldId)).thenReturn(Optional.empty());
 
         assertThrows(FieldNotFoundException.class, () -> entryService.createEntryFromDTO(entryDTO));
@@ -76,7 +80,7 @@ class EntryServiceUnitTest {
 
         when(entryRepository.findById(entryId)).thenReturn(Optional.of(entry));
 
-        EntryDTO result = entryService.getEntryById(entryId);
+        EntryResponseDTO result = entryService.getEntryById(entryId);
 
         assertNotNull(result);
         assertEquals(entry.getValue(), result.getValue());
@@ -95,7 +99,8 @@ class EntryServiceUnitTest {
     @Test
     void testUpdateEntry_EntryExists() {
         Long entryId = 1L;
-        EntryDTO entryDTO = new EntryDTO(1L, "Updated Value");
+        UpdateEntryRequestDTO entryDTO = new UpdateEntryRequestDTO();
+        entryDTO.setValue("Updated Value");
         Field field = new Field();
         Entry entry = new Entry("Old Value", field);
         entry.setId(entryId);
@@ -103,7 +108,7 @@ class EntryServiceUnitTest {
         when(entryRepository.findById(entryId)).thenReturn(Optional.of(entry));
         when(entryRepository.save(any(Entry.class))).thenReturn(entry);
 
-        EntryDTO result = entryService.updateEntry(entryId, entryDTO);
+        EntryResponseDTO result = entryService.updateEntry(entryId, entryDTO);
 
         assertEquals("Updated Value", result.getValue());
         verify(entryRepository, times(1)).save(entry);
@@ -112,7 +117,8 @@ class EntryServiceUnitTest {
     @Test
     void testUpdateEntry_EntryNotFound() {
         Long entryId = 1L;
-        EntryDTO entryDTO = new EntryDTO(1L, "Updated Value");
+        UpdateEntryRequestDTO entryDTO = new UpdateEntryRequestDTO();
+        entryDTO.setValue("Updated Value");
 
         when(entryRepository.findById(entryId)).thenReturn(Optional.empty());
 
