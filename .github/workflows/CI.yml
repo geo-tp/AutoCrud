@@ -40,7 +40,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: coverage-report
-        path: target/site/jacoco/index.html
+        path: target/site/jacoco
 
   build:
     runs-on: ubuntu-latest
