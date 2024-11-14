@@ -1,11 +1,11 @@
 package com.autocrud.main.controllers;
 
-import com.autocrud.main.dtos.UserDTO;
+import com.autocrud.main.dtos.CreateUserRequestDTO;
+import com.autocrud.main.dtos.UserResponseDTO;
 import com.autocrud.main.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -18,11 +18,15 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public UserDTO createUser(@RequestParam String email, @RequestParam String password, @RequestParam(required = false) List<String> roles) {
-        if (roles == null || roles.isEmpty()) {
-            roles = Arrays.asList("ROLE_USER");
+    public UserResponseDTO createUser(@RequestBody CreateUserRequestDTO userRequestDTO) {
+        if (userRequestDTO.getRoles() == null || userRequestDTO.getRoles().isEmpty()) {
+            userRequestDTO.setRoles(Arrays.asList("ROLE_USER"));
         }
 
-        return userService.createUser(email, password, roles);
+        return userService.createUser(
+            userRequestDTO.getEmail(),
+            userRequestDTO.getPassword(),
+            userRequestDTO.getRoles()
+        );
     }
 }

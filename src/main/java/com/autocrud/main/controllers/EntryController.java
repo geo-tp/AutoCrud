@@ -1,7 +1,9 @@
 package com.autocrud.main.controllers;
 
 import com.autocrud.main.annotations.CheckOwnership;
-import com.autocrud.main.dtos.EntryDTO;
+import com.autocrud.main.dtos.CreateEntryRequestDTO;
+import com.autocrud.main.dtos.EntryResponseDTO;
+import com.autocrud.main.dtos.UpdateEntryRequestDTO;
 import com.autocrud.main.services.EntryService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,21 +21,21 @@ public class EntryController {
 
     // Add entries
     @PostMapping
-    public List<EntryDTO> addEntries(@RequestBody List<EntryDTO> entryDTOs) {
+    public List<EntryResponseDTO> addEntries(@RequestBody List<CreateEntryRequestDTO> entryDTOs) {
         return entryService.addEntriesFromDTO(entryDTOs);
     }
 
     // Get entry by ID
     @CheckOwnership(resourceId = "id", resourceType = "entry")
     @GetMapping("/{entryId}")
-    public EntryDTO getEntryById(@PathVariable Long entryId) {
+    public EntryResponseDTO getEntryById(@PathVariable Long entryId) {
         return entryService.getEntryById(entryId);
     }
 
     // Update entry
     @CheckOwnership(resourceId = "id", resourceType = "entry")
     @PutMapping("/{entryId}")
-    public EntryDTO updateEntry(@PathVariable Long entryId, @RequestBody EntryDTO entryDTO) {
+    public EntryResponseDTO updateEntry(@PathVariable Long entryId, @RequestBody UpdateEntryRequestDTO entryDTO) {
         return entryService.updateEntry(entryId, entryDTO);
     }
 
