@@ -1,6 +1,6 @@
 package com.autocrud.main.transformers;
 
-import com.autocrud.main.dtos.ChannelDTO;
+import com.autocrud.main.dtos.ChannelResponseDTO;
 import com.autocrud.main.entities.Channel;
 import com.autocrud.main.entities.User;
 import org.springframework.stereotype.Component;
@@ -15,8 +15,8 @@ public class ChannelTransformer {
     }
 
     // Convert Channel entity to ChannelDTO
-    public ChannelDTO convertToDTO(Channel channel) {
-        ChannelDTO dto = new ChannelDTO();
+    public ChannelResponseDTO convertToDTO(Channel channel) {
+        ChannelResponseDTO dto = new ChannelResponseDTO();
         dto.setId(channel.getId());
         dto.setChannelName(channel.getChannelName());
         dto.setOwnerId(channel.getOwner().getId());
@@ -25,7 +25,7 @@ public class ChannelTransformer {
     }
 
     // Convert ChannelDTO to Channel entity (without setting fields)
-    public Channel convertToEntity(ChannelDTO channelDTO, User owner) {
+    public Channel convertToEntity(ChannelResponseDTO channelDTO, User owner) {
         Channel channel = new Channel();
         channel.setChannelName(channelDTO.getChannelName());
         channel.setOwner(owner);
