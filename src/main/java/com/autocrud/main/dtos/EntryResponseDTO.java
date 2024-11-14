@@ -13,7 +13,6 @@ public class EntryResponseDTO {
     private Long userId;
     private LocalDateTime createdAt;
 
-    // Custom constructors as needed
     public EntryResponseDTO(Long id, Long fieldId, String value, Long userId) {
         this.id = id;
         this.fieldId = fieldId;
