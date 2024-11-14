@@ -1,7 +1,11 @@
 package com.autocrud.main.dtos;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
+@Data
+@NoArgsConstructor
 public class EntryResponseDTO {
     private Long id;
     private Long fieldId;
@@ -9,8 +13,7 @@ public class EntryResponseDTO {
     private Long userId;
     private LocalDateTime createdAt;
 
-    public EntryResponseDTO() {}
-
+    // Custom constructors as needed
     public EntryResponseDTO(Long id, Long fieldId, String value, Long userId) {
         this.id = id;
         this.fieldId = fieldId;
@@ -27,50 +30,9 @@ public class EntryResponseDTO {
         this.value = value;
     }
 
-
     public EntryResponseDTO(Long id, Long fieldId, String value) {
         this.id = id;
         this.fieldId = fieldId;
         this.value = value;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getFieldId() {
-        return fieldId;
-    }
-
-    public void setFieldId(Long fieldId) {
-        this.fieldId = fieldId;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public Long getuserId() {
-        return userId;
-    }
-
-    public void setuserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }
